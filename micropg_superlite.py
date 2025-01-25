@@ -67,7 +67,6 @@ class connect:
         self.host = host
         self.port = port
         self.encoding = 'UTF8'
-        self.autocommit = False
         self._ready_for_query = b'I'
         
         # Inlined _open() function
