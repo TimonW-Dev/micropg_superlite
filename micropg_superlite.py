@@ -30,7 +30,7 @@
 
 ### Version 0.0.0
 
-import ssl, hashlib, socket, binascii, random
+import hashlib, socket, binascii, random
 
 # -----------------------------------------------------------------------------
 
@@ -60,13 +60,12 @@ class Cursor:
         self.connection = None
 
 class connect:
-    def __init__(self, host, user, password, database, port=5432, use_ssl=False):
+    def __init__(self, host, user, password, database, port=5432):
         self.user = user
         self.password = password
         self.database = database
         self.host = host
         self.port = port
-        self.use_ssl = use_ssl
         self.encoding = 'UTF8'
         self.autocommit = False
         self._ready_for_query = b'I'
@@ -74,10 +73,6 @@ class connect:
         # Inlined _open() function
         self.sock = socket.socket()
         self.sock.connect(socket.getaddrinfo(self.host, self.port)[0][-1])
-        if self.use_ssl:
-            self._write((8).to_bytes(4, 'big') + (80877103).to_bytes(4, 'big'))
-            if self._read(1) == b'S': self.sock = ssl.wrap_socket(self.sock)
-            else: raiseExceptionLostConnection()
         v = b'\x00\x03\x00\x00user\x00' + self.user.encode('ascii') + b'\x00'
         if self.database: v += b'database\x00' + self.database.encode('ascii') + b'\x00'
         v += b'\x00'
