@@ -181,14 +181,13 @@ class connect:
             self.begin()
         self._send_message(b'Q', query.encode(self.encoding) + b'\x00')
         self._process_messages(obj)
+        # Commit
         if self.sock:
             self._send_message(b'Q', b"COMMIT\x00")
             self._process_messages(None)
             self.begin()
 
     def begin(self):
-        if self._ready_for_query == b'E':
-            self._rollback()
         self._send_message(b'Q', b"BEGIN\x00")
         self._process_messages(None)
 
