@@ -31,5 +31,4 @@ conn = micropg_superlite.connect(host=db_host,
 cur = conn.cursor()
 
 cur.execute("delete from customers where id=1;")
-conn.commit()
 conn.close()
