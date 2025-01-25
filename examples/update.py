@@ -31,5 +31,4 @@ conn = micropg_superlite.connect(host=db_host,
 cur = conn.cursor()
 
 cur.execute("update customers set firstName='UpdatedFirstName' where id=2;")
-conn.commit()
 conn.close()

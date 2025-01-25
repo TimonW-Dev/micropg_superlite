@@ -55,7 +55,6 @@ print("---")
 
 ### INSERT test
 cur.execute("INSERT INTO customers (firstName, lastName, email, birthDate, specialNote, loyaltyPoints) VALUES ('Jörg@', 'Müller-Schmïdt#', 'joerg.mueller-schmidt@täst.com', '1976-09-13', 'VIP & allergisch gegen Laktose; bevorzugt Bio-Produkte!', 666)")
-conn.commit()
 
 cur.execute('select count(Id) from customers')
 selectresult = cur.fetchall()
@@ -70,7 +69,6 @@ print("---")
 
 ### UPDATE test
 cur.execute("UPDATE customers SET firstName = 'Jörg-Ülrîch™', lastName = 'Müllèr-van der Schmïdt§', email = 'joerg.ueli+mueller-schmidt_123@tæst.çøm', specialNote = CONCAT(specialNote, ' | Achtung: Name geändert! (ツ)_/¯'), loyaltyPoints = loyaltyPoints + 42 WHERE firstName = 'Jörg@' AND lastName = 'Müller-Schmïdt#'")
-conn.commit()
 
 cur.execute("select firstname from customers WHERE firstName = 'Jörg-Ülrîch™' AND lastName = 'Müllèr-van der Schmïdt§'")
 selectresult = cur.fetchall()
@@ -84,7 +82,6 @@ print("---")
 
 ### DELETE test
 cur.execute("DELETE FROM customers WHERE firstName = 'Jörg-Ülrîch™' AND lastName = 'Müllèr-van der Schmïdt§'")
-conn.commit()
 
 cur.execute("select count(Id) from customers")
 selectresult = cur.fetchall()
@@ -97,41 +94,8 @@ else:
 
 print("---")
 
-
-### Rollback test
-
-cur.execute('select count(id) from categories;')
-selectresult = cur.fetchall()
-
-if (selectresult[0][0] != 7):
-    print("!!!failed!!! Can't test ROLLBACK because there are to many entries in the categories test table")
-    successCount = successCount + 1
-    
-else:
-    cur.execute("insert into categories (id, name, parentcategoryid) VALUES (99, 'Rollback Test', NULL);")
-    
-    cur.execute('select count(id) from categories;')
-    selectresult = cur.fetchall()
-    
-    if (selectresult[0][0] == 8):
-        conn.rollback()
-        cur.execute('select count(id) from categories;')
-        selectresult = cur.fetchall()
-        if (selectresult[0][0] == 7):
-            print("ROLLBACK ok")
-        else:
-            print("ROLLBACK !!!failed!!!")
-            successCount = successCount + 1
-    else:
-        print("!!!failed!!! Can't test ROLLBACK, there were some issues with the insert into the categories test table")
-        successCount = successCount + 1
-    
-print("---")
-
-
 ### CREATE TABLE test
 cur.execute('CREATE TABLE testTable (testChar varchar(45), testInt Int, testDate date);')
-conn.commit()
 
 cur.execute("SELECT count(schemaname) FROM pg_catalog.pg_tables WHERE schemaname like 'public'")
 selectresult = cur.fetchall()
@@ -146,7 +110,6 @@ print("---")
 
 ### DROP TABLE test
 cur.execute('DROP TABLE testTable;')
-conn.commit()
 
 cur.execute("SELECT count(schemaname) FROM pg_catalog.pg_tables WHERE schemaname like 'public'")
 selectresult = cur.fetchall()
@@ -159,26 +122,9 @@ else:
 
 print("---")
 
-### Autocommit test
-conn.autocommit = True
-cur.execute("INSERT INTO customers (firstName, lastName, email, birthDate, specialNote, loyaltyPoints) VALUES ('Auto', 'Commit', 'auto.commit@test.com', '2000-01-01', 'Autocommit test', 0)")
-cur.execute('select count(Id) from customers')
-selectresult = cur.fetchall()
-if (selectresult[0][0] == 13):
-    print("AUTOCOMMIT ok")
-    cur.execute("DELETE FROM customers WHERE firstName = 'Auto' AND lastName = 'Commit'")
-else:
-    print("AUTOCOMMIT !!!failed!!!")
-    successCount = successCount + 1
-conn.autocommit = False
-
-print("---")
-
 ### Data types handling test
 cur.execute("CREATE TABLE data_types_test (char_col CHAR(1), int_col INT, float_col FLOAT, bool_col BOOLEAN, date_col DATE, null_col VARCHAR(45));")
-conn.commit()
 cur.execute("INSERT INTO data_types_test (char_col, int_col, float_col, bool_col, date_col, null_col) VALUES ('a', 1, 1.1, TRUE, '2024-12-31', NULL);")
-conn.commit()
 cur.execute("SELECT * FROM data_types_test;")
 selectresult = cur.fetchall()
 print(selectresult)
@@ -188,7 +134,6 @@ else:
     print("DATA TYPES !!!failed!!!")
     successCount = successCount + 1
 cur.execute('DROP TABLE data_types_test;')
-conn.commit()
 
 print("---")
 

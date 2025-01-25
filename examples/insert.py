@@ -31,5 +31,4 @@ conn = micropg_superlite.connect(host=db_host,
 cur = conn.cursor()
 
 cur.execute('INSERT INTO customers (id, firstName, lastName, email) values (%s, %s, %s, %s)', ['5', 'David', 'Wilson', 'david.wilson@example.com'])
-conn.commit()
 conn.close()
