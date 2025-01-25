@@ -178,18 +178,16 @@ class connect:
 
     def execute(self, query, obj=None):
         if self._ready_for_query != b'T':
-            self.begin()
+            self._send_message(b'Q', b"BEGIN\x00")
+            self._process_messages(None)
         self._send_message(b'Q', query.encode(self.encoding) + b'\x00')
         self._process_messages(obj)
         # Commit
         if self.sock:
             self._send_message(b'Q', b"COMMIT\x00")
             self._process_messages(None)
-            self.begin()
-
-    def begin(self):
-        self._send_message(b'Q', b"BEGIN\x00")
-        self._process_messages(None)
+            self._send_message(b'Q', b"BEGIN\x00")
+            self._process_messages(None)
 
     def close(self):
         if self.sock:
