@@ -215,13 +215,3 @@ class connect:
             self._write(b'X\x00\x00\x00\x04')
             self.sock.close()
             self.sock = None
-
-def create_database(host, user, password, database, port=5432, use_ssl=False):
-    conn = connect(host, user, password, None, port, use_ssl)
-    conn._send_message(b'Q', 'CREATE DATABASE {}'.format(database).encode('utf-8') + b'\x00')
-    conn.close()
-
-def drop_database(host, user, password, database, port=5432, use_ssl=False):
-    conn = connect(host, user, password, None, port, use_ssl)
-    conn._send_message(b'Q', 'DROP DATABASE {}'.format(database).encode('utf-8') + b'\x00')
-    conn.close()
