@@ -24,10 +24,10 @@ micropg_lite is a lightweight version of micropg. micropg_lite does not include 
 Since some projects have a very high amount of their own code, the RAM usage can quickly increase and there is not much RAM left for the libarries. This is where micropg_superlite can help. This is based on micropg_lite and requires even less RAM. However, it offers stronger restrictions in functionality. Functions such as SSL, ROLLBACK, CREATE/DROP database and others have been removed.
 
 ## micropg_superlite limitations
+- **Forced autocommit (No manual commit function needed and not possible)**
+- No support for ROLLBACK
 - No support for SSL
 - No support for for CREATE and DROP database
-- No support for ROLLBACK
-- Forced autocommit (No manual commit function calls)
 - Reduced error handling
 - No MD5 auth method support
 - No native support for the so-called "executemany" function
