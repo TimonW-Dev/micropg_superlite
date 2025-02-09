@@ -1,19 +1,30 @@
 # micropg_superlite V3
-
-This README contains the most important things you need to know about micropg_superlite. You can find detailed documentation in the [wiki of this repository](https://github.com/TimonW-Dev/micropg_superlite/wiki).
+**The world's lightest PostgreSQL driver for MicroPython, made for ESP8266**
 
 If there are any problems, questions, bugs or suggestions for improvement, please open an [issue](https://github.com/TimonW-Dev/micropg_superlite/issues) on this Github repository or write an email to the email address linked in [my profile](https://github.com/TimonW-Dev). We are happy to provide the necessary free support to help you with your micropg_superlite requests.
 
 ## About micropg_superlite
-### Difference between [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite) and [micropg](https://github.com/nakagami/micropg)
+### Differences between [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite), [micropg_lite](https://github.com/TimonW-Dev/micropg_lite) and [micropg](https://github.com/nakagami/micropg)
+
 
 [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite) is a lightweight version based on [micropg](https://github.com/nakagami/micropg) by [
-nakagami](https://github.com/nakagami). If you have RAM/memory issues with [micropg](https://github.com/nakagami/micropg) than this library might solve this issue.
+nakagami](https://github.com/nakagami). If you have RAM/memory issues with [micropg](https://github.com/nakagami/micropg) or [micropg_lite](https://github.com/TimonW-Dev/micropg_lite)  than this library might solve this issue. micropg_superlite has been specially optimised for the ESP8266 microchip and other microchips that have little RAM.
 
-micropg_superlite has been specially optimised for the ESP8266 microchip and other microchips that have little RAM. micopg_lite works on any microchip that runs micropyhton.
 
-### Major changes in micropg_superlite V3
-Those who have already worked with micropg_superlite V2 know that the micropg_superlite V2 driver has some limitations in terms of functionality. Therefore, micropg_superlite V3 was optimized from scratch to bring back the functionality that is present in [Nakagami's](https://github.com/nakagami) [micropg](https://github.com/nakagami/micropg).
+
+#### micropg:
+micropg is the original PostgreSQL driver developed by [Nakagami](https://github.com/nakagami). micropg supports all functions and runs stable. The code is clear and readable and therefore ideal for further development of the driver.
+
+The only disadvantage of micopg is that it cannot be executed on microchips with very little RAM such as the ESP8266.
+
+#### micropg_lite:
+micropg_lite is a lightweight version of micropg. micropg_lite does not include certain functions such as detailed error handling or MD5 support. However, the most important functions are included. The RAM usage is strongly optimized by the not very readable code. micropg_lite runs on microchiops with low ram like the ESP8266.
+
+#### micropg_superlite:
+Since some projects have a very high amount of their own code, the RAM usage can quickly increase and there is not much RAM left for the libarries. This is where micropg_superlite can help. This is based on micropg_lite and requires even less RAM. However, it offers stronger restrictions in functionality. Functions such as SSL, ROLLBACK, CREATE/DROP database and others have been removed.
+
+
+
 
 ## Installation
 
@@ -96,7 +107,6 @@ conn = micropg_superlite.connect(host='127.0.0.1', # To Do: Replace this string 
 cur = conn.cursor()
 
 cur.execute('INSERT INTO customers (id, firstName, lastName, email) values (%s, %s, %s, %s)', ['5', 'David', 'Wilson', 'david.wilson@example.com'])
-conn.commit()
 conn.close()
 
 ````
@@ -110,7 +120,6 @@ conn = micropg_superlite.connect(host='127.0.0.1', # To Do: Replace this string 
 cur = conn.cursor()
 
 cur.execute("update customers set firstName='UpdatedFirstName' where id=2;")
-conn.commit()
 conn.close()
 ````
 
@@ -123,12 +132,15 @@ conn = micropg_superlite.connect(host='127.0.0.1', # To Do: Replace this string 
 cur = conn.cursor()
 
 cur.execute("delete from customers where id=1;")
-conn.commit()
 conn.close()
 
 ````
 
 ## micropg_superlite limitations
-- reduced error handling
-- no MD5 auth method support
+- No support for SSL
+- No support for for CREATE and DROP database
+- No support for ROLLBACK
+- Forced autocommit (No manual commit function calls)
+- Reduced error handling
+- No MD5 auth method support
 - No native support for the so-called "executemany" function
