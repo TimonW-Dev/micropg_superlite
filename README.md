@@ -1,4 +1,4 @@
-# micropg_superlite V3
+# micropg_superlite
 **The world's lightest PostgreSQL driver for MicroPython, made for ESP8266**
 
 If there are any problems, questions, bugs or suggestions for improvement, please open an [issue](https://github.com/TimonW-Dev/micropg_superlite/issues) on this Github repository or write an email to the email address linked in [my profile](https://github.com/TimonW-Dev). We are happy to provide the necessary free support to help you with your micropg_superlite requests.
@@ -23,7 +23,16 @@ micropg_lite is a lightweight version of micropg. micropg_lite does not include 
 #### micropg_superlite:
 Since some projects have a very high amount of their own code, the RAM usage can quickly increase and there is not much RAM left for the libarries. This is where micropg_superlite can help. This is based on micropg_lite and requires even less RAM. However, it offers stronger restrictions in functionality. Functions such as SSL, ROLLBACK, CREATE/DROP database and others have been removed.
 
+## micropg_superlite limitations
+- No support for SSL
+- No support for for CREATE and DROP database
+- No support for ROLLBACK
+- Forced autocommit (No manual commit function calls)
+- Reduced error handling
+- No MD5 auth method support
+- No native support for the so-called "executemany" function
 
+If you need a PostgreSQL driver with less limitations, check [micropg](https://github.com/nakagami/micropg) or [micropg_lite](https://github.com/TimonW-Dev/micropg_lite).
 
 
 ## Installation
@@ -135,12 +144,3 @@ cur.execute("delete from customers where id=1;")
 conn.close()
 
 ````
-
-## micropg_superlite limitations
-- No support for SSL
-- No support for for CREATE and DROP database
-- No support for ROLLBACK
-- Forced autocommit (No manual commit function calls)
-- Reduced error handling
-- No MD5 auth method support
-- No native support for the so-called "executemany" function
