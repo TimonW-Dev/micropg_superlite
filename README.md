@@ -30,7 +30,7 @@ The handling has also been changed slightly, for example, you cannot perform a c
 - No MD5 auth method support
 - No native support for the so-called "executemany" function
 
-If you need a PostgreSQL driver with less limitations, check [micropg](https://github.com/nakagami/micropg) or [micropg_lite](https://github.com/TimonW-Dev/micropg_lite).
+If you need a PostgreSQL driver with less limitations, check out [micropg](https://github.com/nakagami/micropg) or [micropg_lite](https://github.com/TimonW-Dev/micropg_lite).
 
 
 ## Installation
