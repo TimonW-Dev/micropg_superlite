@@ -3,7 +3,7 @@
 
 If there are any problems, questions, bugs or suggestions for improvement, please open an [issue](https://github.com/TimonW-Dev/micropg_superlite/issues) on this Github repository or write an email to the email address linked in [my profile](https://github.com/TimonW-Dev). We are happy to provide the necessary free support to help you with your micropg_superlite requests.
 
-**micropg_superlite is based on [micropg](https://github.com/nakagami/micropg), which was developed by [nakagami](https://github.com/nakagami). Therefore a very big thank you to nakagami for the great development. Without micropg there wouldn't be micropg_lite!**
+**micropg_superlite is based on [micropg](https://github.com/nakagami/micropg), which was developed by [nakagami](https://github.com/nakagami). Therefore very big thanks to nakagami for the great development. Without micropg there wouldn't be micropgsuper_lite!**
 
 ## About micropg_superlite
 ### Differences between [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite), [micropg_lite](https://github.com/TimonW-Dev/micropg_lite) and [micropg](https://github.com/nakagami/micropg)
