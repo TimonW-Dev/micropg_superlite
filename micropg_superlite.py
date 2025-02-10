@@ -28,7 +28,7 @@
 # micropg (https://github.com/nakagami/micropg) a minipg (https://github.com/nakagami/minipg) subset.
 ##############################################################################
 
-### Version 0.0.0
+### Version 1.0.0
 
 import hashlib, socket, binascii, random
 
