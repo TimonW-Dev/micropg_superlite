@@ -1,43 +1,44 @@
 # micropg_superlite
 **The world's lightest PostgreSQL driver for MicroPython, made for ESP8266**
 
-If there are any problems, questions, bugs or suggestions for improvement, please open an [issue](https://github.com/TimonW-Dev/micropg_superlite/issues) on this Github repository or write an email to the email address linked in [my profile](https://github.com/TimonW-Dev). We are happy to provide the necessary free support to help you with your micropg_superlite requests.
+If you encounter any problems, have questions, or would like to suggest an improvement, feel free to open an [issue](https://github.com/TimonW-Dev/micropg_superlite/issues) or contact me by email using the address linked in [my profile](https://github.com/TimonW-Dev). Please keep in mind that micropg_superlite is an open-source project released under the MIT License and maintained on a voluntary basis, so support is provided as time allows.
 
 **micropg_superlite is based on [micropg](https://github.com/nakagami/micropg), which was developed by [nakagami](https://github.com/nakagami). Therefore very big thanks to nakagami for the great development. Without micropg there wouldn't be micropgsuper_lite!**
 
 ## About micropg_superlite
-### Differences between [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite), [micropg_lite](https://github.com/TimonW-Dev/micropg_lite) and [micropg](https://github.com/nakagami/micropg)
+`micropg_superlite` is the smallest PostgreSQL driver for MicroPython and is best for devices with little RAM. The ESP8266 has very little RAM, so it can only run `micropg_lite` or `micropg_superlite`.
 
-**micropg:** <br>
-micropg is the original PostgreSQL database driver developed by [nakagami](https://github.com/nakagami). micropg supports all functions and runs stable. The code is clear and readable and therefore ideal for further development of the driver.
+Compare the features and RAM usage of each driver to choose the right PostgreSQL library for your MicroPython project.
 
-The only disadvantage of micopg is that it cannot be executed on microchips with very little RAM such as the ESP8266.
+| Feature | [micropg](https://github.com/nakagami/micropg) | [micropg_lite](https://github.com/TimonW-Dev/micropg_lite) | [micropg_superlite](https://github.com/TimonW-Dev/micropg_superlite) **you are here** |
+|---|---|---|---|
+| 💾 RAM usage¹ | 27,552 bytes (26.91 KiB)<br>Reference | 8,336 bytes (8.14 KiB)<br>70% less than `micropg` | 6,928 bytes (6.77 KiB)<br>75% less than `micropg`; 17% less than `micropg_lite` |
+| 🔍 `SELECT` | ✅ Supported | ✅ Supported | ✅ Supported |
+| ➕ `INSERT` | ✅ Supported | ✅ Supported | ✅ Supported |
+| ✏️ `UPDATE` | ✅ Supported | ✅ Supported | ✅ Supported |
+| 🗑️ `DELETE` | ✅ Supported | ✅ Supported | ✅ Supported |
+| 🔐 Authentication | ✅ SCRAM-SHA-256, MD5 | ⚠️ SCRAM-SHA-256 only | ⚠️ SCRAM-SHA-256 only |
+| ⚠️ Detailed error handling | ✅ Full | ⚠️ Reduced | ⚠️ Reduced |
+| 🔒 SSL | ✅ Supported | ✅ Supported | ❌ Not supported |
+| 💾 Manual commit | ✅ Supported | ✅ Supported | ❌ Not supported (forced autocommit) |
+| ↩️ `ROLLBACK` | ✅ Supported | ✅ Supported | ❌ Not supported |
+| 🗄️ Create/drop database | ✅ Supported | ✅ Supported | ❌ Not supported |
+| 📦 Native `executemany` support | ✅ Supported | ❌ Not supported | ❌ Not supported |
+| 📖 Source code readability | ✅ Readable, clear structure | ❌ Compact and optimized for RAM | ❌ Compact and optimized for RAM |
 
-**micropg_lite:** <br>
-micropg_lite is a lightweight version of micropg. micropg_lite does not include certain functions such as detailed error handling or MD5 support. However, the most important functions are included. The RAM usage is strongly optimized by the not very readable code. micropg_lite runs on microchiops with low ram like the ESP8266.
-
-**micropg_superlite:** <br>
-Since some projects have a very high amount of their own code, the RAM usage can quickly increase and there is not much RAM left for the libarries. This is where micropg_superlite can help. micropg_superlite is based on micropg_lite and requires even less RAM. However, it offers stronger restrictions in functionality. Functions such as SSL, ROLLBACK, CREATE/DROP database and others have been removed. The focus is on the only absolutely necessary functions such as SELECT, INSERT, UPDATE and DELETE.
-
-The handling has also been changed slightly, for example, you cannot perform a commit, as this is done automatically after each querry.
-
-## micropg_superlite limitations
-- **Forced autocommit (No manual commit function needed and not possible)**
-- No support for ROLLBACK
-- No support for SSL
-- No support for for CREATE and DROP database
-- Reduced error handling
-- No MD5 auth method support
-- No native support for the so-called "executemany" function
-
-If you need a PostgreSQL driver with less limitations, check out [micropg](https://github.com/nakagami/micropg) or [micropg_lite](https://github.com/TimonW-Dev/micropg_lite).
-
+¹ RAM usage measured on a Raspberry Pi Pico W running MicroPython firmware 1.29.0. Actual usage may vary with the firmware build and measurement conditions.
 
 ## Installation
 
-1. Download the `micropg_superlite.py` file from this repository to your local computer.
+### Which file should I use: `.py` or `.mpy`?
 
-2. Copy the `micropg_superlite.py` file to the "/lib" folder on the microcontroller using the Thonny IDE or another program. If there is no "lib" folder in the root directory, you have to create it.
+**We recommend using `micropg_superlite.py`.** If you need to save even more RAM, you can also use the precompiled `micropg_superlite.mpy` file, but this is not necessary in most cases. The `.mpy` file may be incompatible with some MicroPython firmware and cannot be edited or debugged like the `.py` file.
+
+### Steps
+
+1. Download the `micropg_superlite.py` or the precompiled `micropg_superlite.mpy` file from the root of this repository to your local computer.
+
+2. Copy the file to the "/lib" folder on the microcontroller using the Thonny IDE or another program. If there is no "lib" folder in the root directory, you have to create it.
 
     **Hint** for the Thony IDE:
     
@@ -54,7 +55,7 @@ import micropg_superlite
 /
 ├─ example.py
 └─ lib/
-    └─ micropg_superlite.py
+    └─ micropg_superlite.py   (or micropg_superlite.mpy)
 ````
 
 ## Examples
