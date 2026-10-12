@@ -31,7 +31,7 @@
 
 import socket
 
-# ssl, hashlib, binascii and random are imported lazily where they are needed to save RAM.
+# hashlib, binascii and random are imported lazily where they are needed to save RAM.
 # -----------------------------------------------------------------------------
 
 def _lost():
@@ -78,16 +78,10 @@ class Cursor:
         self.connection = None
 
 class connect:
-    def __init__(self, host, user, password, database, port=5432, use_ssl=False):
+    def __init__(self, host, user, password, database, port=5432):
         self.encoding = 'utf-8'
-        self.autocommit = False
         s = self.sock = socket.socket()
         s.connect(socket.getaddrinfo(host, port)[0][-1])
-        if use_ssl:
-            self._write(b'\x00\x00\x00\x08\x04\xd2\x16\x2f')  # SSLRequest
-            if self._read(1) != b'S': _lost()
-            import ssl
-            self.sock = ssl.wrap_socket(s)
         v = b'\x00\x03\x00\x00user\x00' + user.encode('ascii') + b'\x00'
         if database: v += b'database\x00' + database.encode('ascii') + b'\x00'
         v += b'\x00'
@@ -126,9 +120,7 @@ class connect:
                         n += l
                     i += 1
                 o._rows.append(tuple(r))
-            elif c == 90:
-                self._s = d[0]
-                break
+            elif c == 90: break
             elif c == 82:
                 t = d[3]
                 assert t == 0 or 9 < t < 13
@@ -149,9 +141,6 @@ class connect:
                     proof = binascii.b2a_base64((int.from_bytes(ck, 'big') ^ int.from_bytes(sig, 'big')).to_bytes(32, 'big')).rstrip(b'\n')
                     f = f'c=biws,r={r},p='.encode() + proof
                     self._write(b'p' + (len(f) + 4).to_bytes(4, 'big') + f)
-            elif c == 67 and o:
-                p = d[:-1].decode('ascii').split()
-                if p and p[-1].isdigit(): o._rowcount = int(p[-1])
             elif c == 84 and o:
                 k = int.from_bytes(d[:2], 'big')
                 ds = o.description = [None] * k
@@ -179,7 +168,7 @@ class connect:
         if not s: _lost()
         r = b''
         while len(r) < n:
-            c = s.read(n - len(r)) if hasattr(s, 'read') else s.recv(n - len(r))
+            c = s.recv(n - len(r))
             if not c: _lost()
             r = r + c if r else c
         return r
@@ -187,51 +176,20 @@ class connect:
     def _write(self, b):
         s = self.sock
         if not s: _lost()
-        w = s.write if hasattr(s, 'write') else s.send
         m = memoryview(b)
         p = 0
-        while p < len(b): p += w(m[p:])
+        while p < len(b): p += s.send(m[p:])
 
     def cursor(self):
         return Cursor(self)
 
+    # Every query runs outside of an explicit transaction, so PostgreSQL commits it automatically.
     def execute(self, query, obj=None):
-        if self._s != 84: self.begin()
         self._q(query.encode(self.encoding))
         self._p(obj)
-        if self.autocommit: self.commit()
-
-    def begin(self):
-        if self._s == 69:
-            self._q(b'ROLLBACK')
-            self._p(None)
-        self._q(b'BEGIN')
-        self._p(None)
-
-    def commit(self):
-        if self.sock:
-            self._q(b'COMMIT')
-            self._p(None)
-            self.begin()
-
-    def rollback(self):
-        if self.sock:
-            self._q(b'ROLLBACK')
-            self._p(None)
-        self.begin()
 
     def close(self):
         if self.sock:
             self._write(b'X\x00\x00\x00\x04')
             self.sock.close()
             self.sock = None
-
-def create_database(host, user, password, database, port=5432, use_ssl=False):
-    c = connect(host, user, password, None, port, use_ssl)
-    c._q('CREATE DATABASE {}'.format(database).encode())
-    c.close()
-
-def drop_database(host, user, password, database, port=5432, use_ssl=False):
-    c = connect(host, user, password, None, port, use_ssl)
-    c._q('DROP DATABASE {}'.format(database).encode())
-    c.close()
